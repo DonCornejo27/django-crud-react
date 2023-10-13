@@ -9,19 +9,11 @@ export function Horario({matriz}) {
     
     // Datos horario
   const armar_horario = horario
-  const [datosRecibidos, setDatosRecibidos] = useState([])
   const [matrizNueva, setMatrizNueva] = useState(matriz)
 
-  useEffect(() => {
-    console.log(datosRecibidos[0]);
-  })
-
   const sacarDato = (lista) => {
-    setDatosRecibidos(lista)
     matrizNueva[lista[1]][lista[2]] = lista[0]
-
   }
-
 
   const params = useParams();
 
