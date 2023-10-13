@@ -23,7 +23,7 @@ export function Horario({matriz}) {
   }
 
 
-  const params = useParams()
+  const params = useParams();
 
   async function convertirAString(listaDeListas) {
     let resultado = JSON.stringify(listaDeListas);
