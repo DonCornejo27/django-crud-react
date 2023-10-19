@@ -1,13 +1,13 @@
-import { createHorario, deleteHorario, updateHorario} from '../api/horario.api'
+import { updateHorario} from '../api/horario.api'
 import React, { useEffect, useState } from "react";
 import { BotonHorario } from "./botonHorario";
 import horario from "../data/horarioCalendario"
 import "../css/styles.css"
 import { useParams } from 'react-router-dom';
 
-export function Horario({matrizD, matrizV}) {
+export function Horario({matrizD, matrizV, data}) {
     
-    // Datos horario
+  // Datos horario
   const armar_horario = horario
   const [matrizDiurno, setMatrizDiurno] = useState(matrizD)
   const [matrizVespertino, setMatrizVespertino] = useState(matrizV)
@@ -26,14 +26,18 @@ export function Horario({matrizD, matrizV}) {
     let resultado1 = JSON.stringify(listaDeListas1);
     let resultado2 = JSON.stringify(listaDeListas2);
 
+    const nuevosDatos = {
+      carrera: data.carrera,
+      departamento: data.departamento,
+      jornada: data.jornada,
+      horarioDiurno: resultado1,
+      horarioVespertino: resultado2,
+      user: data.user
+  }
+
     try {
-      try {
-        await updateHorario(params.id, {"horarioDiurno": resultado1, "horarioVespertino": resultado2});
-        window.alert("Horario actualizado con éxito :)")
-      } catch {
-        await createHorario({"horarioDiurno": resultado1, "horarioVespertino": resultado2});
-        window.alert("Horario creado con éxito :)")
-      }
+      await updateHorario(params.id, nuevosDatos);
+      window.alert("Horario actualizado con éxito :)")
     } catch {
       window.alert("Ocurrió un error. Intentalo de nuevo.")
     }
