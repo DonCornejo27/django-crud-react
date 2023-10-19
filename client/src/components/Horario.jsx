@@ -5,32 +5,37 @@ import horario from "../data/horarioCalendario"
 import "../css/styles.css"
 import { useParams } from 'react-router-dom';
 
-export function Horario({matriz}) {
+export function Horario({matrizD, matrizV}) {
     
     // Datos horario
   const armar_horario = horario
-  const [matrizNueva, setMatrizNueva] = useState(matriz)
+  const [matrizDiurno, setMatrizDiurno] = useState(matrizD)
+  const [matrizVespertino, setMatrizVespertino] = useState(matrizV)
 
-  const sacarDato = (lista) => {
-    matrizNueva[lista[1]][lista[2]] = lista[0]
+  const sacarDatoD = (lista) => {
+    matrizDiurno[lista[1]][lista[2]] = lista[0]
+  }
+
+  const sacarDatoV = (lista) => {
+    matrizVespertino[lista[1]][lista[2]] = lista[0]
   }
 
   const params = useParams();
 
-  async function convertirAString(listaDeListas) {
-    let resultado = JSON.stringify(listaDeListas);
-    console.log(params.id);
+  async function convertirAString(listaDeListas1, listaDeListas2) {
+    let resultado1 = JSON.stringify(listaDeListas1);
+    let resultado2 = JSON.stringify(listaDeListas2);
 
     try {
       try {
-        await updateHorario(params.id, {"tabla": resultado});
+        await updateHorario(params.id, {"horarioDiurno": resultado1, "horarioVespertino": resultado2});
         window.alert("Horario actualizado con éxito :)")
       } catch {
-        await createHorario({"tabla": resultado});
+        await createHorario({"horarioDiurno": resultado1, "horarioVespertino": resultado2});
         window.alert("Horario creado con éxito :)")
       }
     } catch {
-      window.alert("FALLASTE :(. Intentalo de nuevo.")
+      window.alert("Ocurrió un error. Intentalo de nuevo.")
     }
   }
 
@@ -54,36 +59,94 @@ export function Horario({matriz}) {
       </div>
       </div>
       
-      <div className="container p-0" style={{border: '2px solid', borderCollapse: 'collapse', height: '60vh', overflowY: 'auto'}}>
-        <table className="table-fixed table table-bordered">
-            <thead className="sticky-top">
-            <tr style={{background: 'gray', color:'white', textAlign: 'center'}}>
-                <th scope="col" style={{ width: '16%' }}>Hora</th>
-                <th scope="col" style={{ width: '14%' }}>Lunes</th>
-                <th scope="col" style={{ width: '14%' }}>Martes</th>
-                <th scope="col" style={{ width: '14%' }}>Miércoles</th>
-                <th scope="col" style={{ width: '14%' }}>Jueves</th>
-                <th scope="col" style={{ width: '14%' }}>Viernes</th>
-                <th scope="col" style={{ width: '14%' }}>Sabado</th>
-            </tr>
-            </thead>
-            <tbody>
-            {armar_horario.map((fila, index) => (
-                <tr key={index}>
-                <td style={{background:'gray', color:'white', textAlign:'center'}}>{fila.hora}</td>
-                <td className="p-1"><BotonHorario onDatosEnviados={sacarDato} fila={index} columna={0} estado={matrizNueva[index][0]}/></td>
-                <td className="p-1 "><BotonHorario onDatosEnviados={sacarDato} fila={index} columna={1} estado={matrizNueva[index][1]}/></td>
-                <td className="p-1 "><BotonHorario onDatosEnviados={sacarDato} fila={index} columna={2} estado={matrizNueva[index][2]}/></td>
-                <td className="p-1 "><BotonHorario onDatosEnviados={sacarDato} fila={index} columna={3} estado={matrizNueva[index][3]}/></td>
-                <td className="p-1 "><BotonHorario onDatosEnviados={sacarDato} fila={index} columna={4} estado={matrizNueva[index][4]}/></td>
-                <td className="p-1 "><BotonHorario onDatosEnviados={sacarDato} fila={index} columna={5} estado={matrizNueva[index][5]}/></td>
-                </tr>
-            ))}
-            </tbody>
-        </table>
+      <div className='container'>
+      <div id="accordion">
+
+        {/* HORARIO DIURNO */}
+        <div className="card">
+          <div className="card-header">
+            <div className="card-link" data-toggle="collapse" data-target="#collapseOne" style={{cursor: 'pointer'}}>
+            Jornada Diurna
+            </div>
+          </div>
+          <div id="collapseOne" className="collapse show" data-parent="#accordion">
+            <div className="card-body">
+              <div className="container p-0 col-10" style={{border: '10px solid #03102C', borderCollapse: 'collapse', height: '60vh', overflowY: 'auto'}}>
+                <table className="table-fixed table table-bordered">
+                  <thead className="sticky-top">
+                    <tr style={{background: 'gray', color:'white', textAlign: 'center'}}>
+                      <th scope="col" style={{ width: '16%' }}>Hora</th>
+                      <th scope="col" style={{ width: '14%' }}>Lunes</th>
+                      <th scope="col" style={{ width: '14%' }}>Martes</th>
+                      <th scope="col" style={{ width: '14%' }}>Miércoles</th>
+                      <th scope="col" style={{ width: '14%' }}>Jueves</th>
+                      <th scope="col" style={{ width: '14%' }}>Viernes</th>
+                      <th scope="col" style={{ width: '14%' }}>Sabado</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {armar_horario.horarioD.map((fila, index) => (
+                      <tr key={index}>
+                      <td style={{background:'gray', color:'white', textAlign:'center'}}>{fila.hora}</td>
+                      <td className="p-1"><BotonHorario onDatosEnviados={sacarDatoD} fila={index} columna={0} estado={matrizDiurno[index][0]}/></td>
+                      <td className="p-1 "><BotonHorario onDatosEnviados={sacarDatoD} fila={index} columna={1} estado={matrizDiurno[index][1]}/></td>
+                      <td className="p-1 "><BotonHorario onDatosEnviados={sacarDatoD} fila={index} columna={2} estado={matrizDiurno[index][2]}/></td>
+                      <td className="p-1 "><BotonHorario onDatosEnviados={sacarDatoD} fila={index} columna={3} estado={matrizDiurno[index][3]}/></td>
+                      <td className="p-1 "><BotonHorario onDatosEnviados={sacarDatoD} fila={index} columna={4} estado={matrizDiurno[index][4]}/></td>
+                      <td className="p-1 "><BotonHorario onDatosEnviados={sacarDatoD} fila={index} columna={5} estado={matrizDiurno[index][5]}/></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      {/* HORARIO VESPERTINO */}
+      <div className="card">
+        <div className="card-header">
+          <div className="collapsed card-link" data-toggle="collapse" data-target="#collapseTwo" style={{cursor: 'pointer'}}>
+            Jornada Vespertina
+          </div>
+        </div>
+        <div id="collapseTwo" className="collapse" data-parent="#accordion">
+          <div className="card-body">
+            <div className="container p-0 col-10" style={{border: '10px solid #03102C', borderCollapse: 'collapse', height: '60vh', overflowY: 'auto'}}>
+              <table className="table-fixed table table-bordered">
+                <thead className="sticky-top">
+                  <tr style={{background: 'gray', color:'white', textAlign: 'center'}}>
+                    <th scope="col" style={{ width: '16%' }}>Hora</th>
+                    <th scope="col" style={{ width: '14%' }}>Lunes</th>
+                    <th scope="col" style={{ width: '14%' }}>Martes</th>
+                    <th scope="col" style={{ width: '14%' }}>Miércoles</th>
+                    <th scope="col" style={{ width: '14%' }}>Jueves</th>
+                    <th scope="col" style={{ width: '14%' }}>Viernes</th>
+                    <th scope="col" style={{ width: '14%' }}>Sabado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {armar_horario.horarioV.map((fila, index) => (
+                    <tr key={index}>
+                    <td style={{background:'gray', color:'white', textAlign:'center'}}>{fila.hora}</td>
+                    <td className="p-1"><BotonHorario onDatosEnviados={sacarDatoV} fila={index} columna={0} estado={matrizVespertino[index][0]}/></td>
+                    <td className="p-1 "><BotonHorario onDatosEnviados={sacarDatoV} fila={index} columna={1} estado={matrizVespertino[index][1]}/></td>
+                    <td className="p-1 "><BotonHorario onDatosEnviados={sacarDatoV} fila={index} columna={2} estado={matrizVespertino[index][2]}/></td>
+                    <td className="p-1 "><BotonHorario onDatosEnviados={sacarDatoV} fila={index} columna={3} estado={matrizVespertino[index][3]}/></td>
+                    <td className="p-1 "><BotonHorario onDatosEnviados={sacarDatoV} fila={index} columna={4} estado={matrizVespertino[index][4]}/></td>
+                    <td className="p-1 "><BotonHorario onDatosEnviados={sacarDatoV} fila={index} columna={5} estado={matrizVespertino[index][5]}/></td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="row mt-4 mr-4 justify-content-end">
-        <div className="btn rounded border justify-content-end" onClick={() => convertirAString(matrizNueva)} style={{background:'black', color:'white'}}>Aplicar Cambios</div>
+    </div>
+        <div className='col-2 m-2'>
+          <div className="btn rounded border justify-content-end" onClick={() => convertirAString(matrizDiurno, matrizVespertino)} style={{background:'black', color:'white'}}>Aplicar Cambios</div>
+        </div>
       </div>
     </div>
     );

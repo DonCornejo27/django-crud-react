@@ -4,4 +4,4 @@ from .models import Horario
 class HorarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Horario
-        fields = ('id', 'tabla')
+        fields = ('id', 'horarioDiurno', 'horarioVespertino')
